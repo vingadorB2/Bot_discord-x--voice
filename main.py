@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 import requests
 import pyttsx3
+import random
 
 load_dotenv()
 
@@ -24,9 +25,13 @@ async def on_ready():
         if canal is not None:
             await canal.send("Bot ligado!")
 
-@bot.command()
-async def start(ctx):
-    await ctx.send("bem vindo!")
+# ------------------- funcções
+
+def speak(texto):
+    engine = pyttsx3.init()
+    engine.say(texto)
+    engine.runAndWait()
+
 
 def get_fact():
     url = "https://uselessfacts.jsph.pl/random.json"
@@ -42,10 +47,23 @@ def get_fact():
     dados = response.json()
     return dados.get("text")
 
-def speak(texto):
-    engine = pyttsx3.init()
-    engine.say(texto)
-    engine.runAndWait()
+
+lista = [
+        "você é uma pessoa boa!",
+        "Nunca desista de seus sonhos!",
+        "tudo pode naquilo que se crê",
+        "a força é testada quando ela é necessária",
+        "Tempos dificeis sempre vão existir, e suas vitórias também",
+        "O ser humano já saiu de seu planeta e criou inteligencia aritifical, você pode ser o próximo nome!",
+        "Estando pobre ou não, fraco ou não, você que decide o fim de seu rumo"]
+
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+@bot.command()
+async def start(ctx):
+    await ctx.send("bem vindo!")
+
     
 @bot.command()
 async def fact(ctx):
@@ -60,5 +78,9 @@ token = os.getenv("DISCORD_TOKEN")
 
 if not token:
     raise RuntimeError("Configure DISCORD_TOKEN no arquivo .env ou como variável de ambiente.")
+
+@bot.command()
+async def motivation(ctx):
+    await ctx.send(random.choice(lista))
 
 bot.run(token)
